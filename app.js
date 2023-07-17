@@ -85,8 +85,8 @@ WHERE tweet.tweet_id='${tweetId}' AND follower_user_id='${userId}';`;
 app.post("/register/",async (request,response)=>{
     const {username,password,name,gender}=request.body;
     const getUserQuery=`SELECT * FROM user WHERE username='${username}'`;
-    const userDBDetails=await db.get(getUserQuery);
-    if (userDBDetails !== undefined){
+    const userDbDetails=await db.get(getUserQuery);
+    if (userDbDetails !== undefined){
         response.status(400);
         response.send("User already exists");
     }   else{
@@ -106,13 +106,13 @@ app.post("/register/",async (request,response)=>{
 app.post("/login/",async (request,response)=>{
     const{username,password}=request.body;
     const getUserQuery=`SELECT * FROM user WHERE username='${username}';`;
-    const userDBDetails=await db.get(getUserQuery);
-    if(userDBDetails !== undefined){
+    const userDbDetails=await db.get(getUserQuery);
+    if(userDbDetails !== undefined){
         const isPasswordCorrect=await bcrypt.compare(
-            password,userDBDetails.password
+            password,userDbDetails.password
         );
         if (isPasswordCorrect){
-            const payload={username,userId:userDBDetails.user_id};
+            const payload={username,userId:userDbDetails.user_id};
             const jwtToken=jwt.sign(payload,"SECRET_KEY");
             response.send({jwtToken});
         }else{
@@ -141,7 +141,7 @@ app.get("/user/tweets/feed/",authentication,async (request,response)=>{
     response.send(tweets);
 });
 
-app.get("/user/following/".authentication,async (request,response)=>{
+app.get("/user/following/",authentication,async (request,response)=>{
     const {username,userId}=request;
     const getFollowingUsersQuery=`SELECT name FROM follower 
        INNER JOIN user ON user.user_id=follower.following_user_id
@@ -250,4 +250,4 @@ module.exports=app;
 
 
 
-tweeterClone-data
+
